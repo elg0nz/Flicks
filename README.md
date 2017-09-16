@@ -32,7 +32,7 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-![GIF of the APP](https://i.imgur.com/tDZ4I3E.gifv)
+![App Preview](https://i.imgur.com/tDZ4I3E.gif)
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
