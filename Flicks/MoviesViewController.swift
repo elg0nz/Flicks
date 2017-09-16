@@ -24,7 +24,16 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = DEFAULT_ROW_HEIGHT
-        makeNetworkRequest()
+
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refreshControlAction(_:)), for: UIControlEvents.valueChanged)
+        refreshControl.tintColor = UIColor.clear
+        tableView.insertSubview(refreshControl, at: 0)
+        makeNetworkRequest(refreshControl: nil)
+    }
+
+    func refreshControlAction(_ refreshControl: UIRefreshControl) {
+        makeNetworkRequest(refreshControl: refreshControl)
     }
 
     func hideNetworkStatusBar() {
@@ -37,12 +46,13 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         self.networkStatusBar.frame = CGRect(x: 0, y: 0, width: self.tableView.frame.width, height: DEFAULT_ROW_HEIGHT / 2)
     }
 
-    func makeNetworkRequest() {
+    func makeNetworkRequest(refreshControl : UIRefreshControl?) {
         SwiftSpinner.show("FFFinding Flicks")
 
         let url = URL(string:"https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed")
         var request = URLRequest(url: url!)
         request.timeoutInterval = 5
+        request.cachePolicy = .reloadIgnoringLocalCacheData
         let session = URLSession(
             configuration: URLSessionConfiguration.default,
             delegate:nil,
@@ -62,6 +72,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
 
                         self.movies = responseDictionary["results"] as! [NSDictionary]
                         self.hideNetworkStatusBar()
+                        refreshControl?.endRefreshing()
                         self.tableView.reloadData()
                     }
                 }
