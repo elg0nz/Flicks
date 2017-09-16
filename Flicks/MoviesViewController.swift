@@ -9,22 +9,40 @@
 import UIKit
 import AFNetworking
 import SwiftSpinner
+import SystemConfiguration
 
+let DEFAULT_ROW_HEIGHT = CGFloat(178)
 class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var networkStatusBar: UILabel!
 
     var movies: [NSDictionary] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        hideNetworkStatusBar()
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.rowHeight = 178
+        tableView.rowHeight = DEFAULT_ROW_HEIGHT
+        makeNetworkRequest()
+    }
+
+    func hideNetworkStatusBar() {
+        self.networkStatusBar.isHidden = true
+        self.networkStatusBar.frame = CGRect()
+    }
+
+    func showNetworkStatusBar() {
+        self.networkStatusBar.isHidden = false
+        self.networkStatusBar.frame = CGRect(x: 0, y: 0, width: self.tableView.frame.width, height: DEFAULT_ROW_HEIGHT / 2)
+    }
+
+    func makeNetworkRequest() {
         SwiftSpinner.show("FFFinding Flicks")
 
-
         let url = URL(string:"https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed")
-        let request = URLRequest(url: url!)
+        var request = URLRequest(url: url!)
+        request.timeoutInterval = 5
         let session = URLSession(
             configuration: URLSessionConfiguration.default,
             delegate:nil,
@@ -34,15 +52,20 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         let task : URLSessionDataTask = session.dataTask(
             with: request as URLRequest,
             completionHandler: { (data, response, error) in
+                if (error != nil) {
+                    self.showNetworkStatusBar()
+                }
+
                 if let data = data {
                     if let responseDictionary = try! JSONSerialization.jsonObject(
                         with: data, options:[]) as? NSDictionary {
 
                         self.movies = responseDictionary["results"] as! [NSDictionary]
-                         SwiftSpinner.hide()
+                        self.hideNetworkStatusBar()
                         self.tableView.reloadData()
                     }
                 }
+                SwiftSpinner.hide()
         });
         task.resume()
     }
