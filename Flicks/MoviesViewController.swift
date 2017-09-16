@@ -18,7 +18,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.rowHeight = 240
+        tableView.rowHeight = 178
 
         let url = URL(string:"https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed")
         let request = URLRequest(url: url!)
@@ -53,11 +53,18 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         if let title = result.value(forKey: "original_title") {
             cell.movieTitle?.text = title as? String
         }
+        if let overview = result.value(forKey: "overview") {
+            cell.movieOverview.text = overview as? String
+            cell.movieOverview.adjustsFontSizeToFitWidth = false
+            cell.movieOverview.lineBreakMode = NSLineBreakMode.byTruncatingTail
+            cell.movieOverview.numberOfLines = 6
+            cell.movieOverview.sizeToFit()
+        }
+
         var posterPath = result.value(forKey: "poster_path") as! String
         posterPath.remove(at: posterPath.startIndex)
         let imageUrlString = "https://image.tmdb.org/t/p/w500/\(posterPath)"
         if let imageUrl = URL(string: imageUrlString) {
-            print(imageUrl)
             cell.moviePosterImageView.setImageWith(imageUrl)
         }
 
