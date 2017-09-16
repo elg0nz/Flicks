@@ -8,6 +8,7 @@
 
 import UIKit
 import AFNetworking
+import SwiftSpinner
 
 class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     @IBOutlet weak var tableView: UITableView!
@@ -19,6 +20,8 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = 178
+        SwiftSpinner.show("FFFinding Flicks")
+
 
         let url = URL(string:"https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed")
         let request = URLRequest(url: url!)
@@ -36,6 +39,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
                         with: data, options:[]) as? NSDictionary {
 
                         self.movies = responseDictionary["results"] as! [NSDictionary]
+                         SwiftSpinner.hide()
                         self.tableView.reloadData()
                     }
                 }
