@@ -12,7 +12,7 @@ import AFNetworking
 class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     @IBOutlet weak var tableView: UITableView!
 
-    var results: [NSDictionary] = []
+    var movies: [NSDictionary] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,7 +35,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
                     if let responseDictionary = try! JSONSerialization.jsonObject(
                         with: data, options:[]) as? NSDictionary {
 
-                        self.results = responseDictionary["results"] as! [NSDictionary]
+                        self.movies = responseDictionary["results"] as! [NSDictionary]
                         self.tableView.reloadData()
                     }
                 }
@@ -44,12 +44,12 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return results.count
+        return movies.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MoviesTableViewCell") as! MoviesTableViewCell
-        let result = self.results[indexPath.row]
+        let result = self.movies[indexPath.row]
         if let title = result.value(forKey: "original_title") {
             cell.movieTitle?.text = title as? String
         }
@@ -75,16 +75,11 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        let cell = sender as? MoviesTableViewCell
+        let indexPath = tableView.indexPath(for: cell!)
+        let movie = movies[indexPath!.row]
+        let detailViewController = segue.destination as! MovieDetailsViewController
+        detailViewController.movie = movie
     }
-    */
-
 }
