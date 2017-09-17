@@ -41,7 +41,9 @@ class MovieDetailsViewController: UIViewController {
         let releaseDateString = movie["release_date"] as? String
         let relaseDate = inputDateFormatter.date(from: releaseDateString!)
         self.releaseDate.text = outputDateFormatter.string(from: relaseDate!)
-        self.rating.text = movie["vote_average"] as? String
+        if let voteAverage = movie["vote_average"] as? Float {
+            self.rating.text = String(voteAverage)
+        }
         self.overview.text = movie["overview"] as? String
         self.overview.adjustsFontSizeToFitWidth = false
         self.overview.numberOfLines = 0
