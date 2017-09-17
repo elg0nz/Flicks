@@ -14,9 +14,9 @@ class MovieDetailsViewController: UIViewController {
     @IBOutlet weak var movieTitle: UILabel!
     @IBOutlet weak var releaseDate: UILabel!
     @IBOutlet weak var rating: UILabel!
-    @IBOutlet weak var duration: UILabel!
     @IBOutlet weak var overview: UILabel!
     @IBOutlet weak var container: UIView!
+    @IBOutlet weak var scrollView: UIScrollView!
 
     var movie: NSDictionary!
     let inputDateFormatter = DateFormatter()
@@ -25,6 +25,13 @@ class MovieDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let scrollViewHeight = container.frame.origin.y + container.frame.size.height
+        scrollView.contentSize = CGSize(width: scrollView.frame.size.width, height: scrollViewHeight)
+
+        setContainerData()
+    }
+
+    func setContainerData() {
         inputDateFormatter.locale = Locale(identifier: "US_en")
         inputDateFormatter.dateFormat = "yyyy-mm-dd"
 
