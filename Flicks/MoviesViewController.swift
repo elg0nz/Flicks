@@ -12,9 +12,10 @@ import SwiftSpinner
 import SystemConfiguration
 
 let DEFAULT_ROW_HEIGHT = CGFloat(178)
-class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var networkStatusBar: UILabel!
+    @IBOutlet weak var searchBar: UISearchBar!
 
     var movies: [NSDictionary] = []
     var endpoint: String = "now_playing"
@@ -30,9 +31,26 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         refreshControl.tintColor = UIColor.clear
         tableView.insertSubview(refreshControl, at: 0)
         makeNetworkRequest(refreshControl: nil)
+
+        searchBar.delegate = self
     }
 
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if (searchText.isEmpty) {
+            makeNetworkRequest(refreshControl: nil)
+        }
 
+        var matches: [NSDictionary] = []
+        movies.forEach { (movie) in
+            let title = movie.value(forKey: "title") as! String
+            let titleContainsString = title.lowercased().range(of: searchText.lowercased()) != nil
+            if (titleContainsString) {
+                matches.append(movie)
+            }
+        }
+        self.movies = matches
+        tableView.reloadData()
+    }
 
     func refreshControlAction(_ refreshControl: UIRefreshControl) {
         makeNetworkRequest(refreshControl: refreshControl)
