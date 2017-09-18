@@ -25,13 +25,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         nowPlayingViewController.endpoint = "now_playing"
         nowPlayingNavigationController.tabBarItem.title = "Now Playing"
         nowPlayingNavigationController.tabBarItem.image = UIImage(named: "time_ticket")
+        setupNavigationBar(navigationController: nowPlayingNavigationController)
 
+        // TODO: Refactor to remove code duplication
         let topRatedNavigationController = storyboard.instantiateViewController(withIdentifier: "MoviesNavigationController") as! UINavigationController
         let topRatedViewController = topRatedNavigationController.topViewController as! MoviesViewController
         topRatedViewController.endpoint = "top_rated"
         topRatedNavigationController.tabBarItem.title = "Top Rated"
         topRatedNavigationController.tabBarItem.image = UIImage(named: "heart_ticket")
-
+        setupNavigationBar(navigationController: topRatedNavigationController)
 
         let tabBarController = UITabBarController()
         tabBarController.viewControllers = [nowPlayingNavigationController, topRatedNavigationController]
@@ -39,6 +41,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.makeKeyAndVisible()
 
         return true
+    }
+
+    func setupNavigationBar(navigationController: UINavigationController) {
+        let navigationBarAppearace = UINavigationBar.appearance()
+        navigationBarAppearace.barTintColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
+        navigationController.navigationBar.titleTextAttributes = [
+            NSFontAttributeName : UIFont.boldSystemFont(ofSize: 22),
+            NSForegroundColorAttributeName : UIColor(red: 0.000, green: 0.812, blue: 0.392, alpha: 1.00),
+        ]
     }
 
     func applicationWillResignActive(_ application: UIApplication) {

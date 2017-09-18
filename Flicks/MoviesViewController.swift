@@ -19,20 +19,20 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     var movies: [NSDictionary] = []
     var endpoint: String = "now_playing"
 
-
     override func viewDidLoad() {
         super.viewDidLoad()
         hideNetworkStatusBar()
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = DEFAULT_ROW_HEIGHT
-
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(refreshControlAction(_:)), for: UIControlEvents.valueChanged)
         refreshControl.tintColor = UIColor.clear
         tableView.insertSubview(refreshControl, at: 0)
         makeNetworkRequest(refreshControl: nil)
     }
+
+
 
     func refreshControlAction(_ refreshControl: UIRefreshControl) {
         makeNetworkRequest(refreshControl: refreshControl)
